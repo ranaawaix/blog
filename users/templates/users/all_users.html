@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    All Users
+{% endblock %}
+{% block content %}
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>All Users</h1>
+        </div><!-- End Page Title -->
+        <section class="section">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <form class="d-flex" role="search" method="GET">
+                        {% csrf_token %}
+                        {% for field in search_form %}
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="col-sm-6">
+                    <p class="d-inline-flex gap-1 float-end">
+                        <a href="{% url 'add-user' %}" class="btn btn-outline-primary"
+                           role="button">Add New User
+                        </a>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Users</h5>
+                            <!-- Table with hoverable rows -->
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Staff Member</th>
+                                    <th scope="col">Posts</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <th scope="row">{{ user.id }}</th>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.is_staff }}</td>
+                                        <td>-</td>
+                                        <td class="text-center">
+                                            <p class="d-inline-flex gap-1">
+                                                <a href="{% url 'profile' user.id %}" class="btn btn-sm btn-warning"
+                                                   role="button">Update</a>
+                                                <a href="{% url 'delete-profile' user.id %}"
+                                                   class="btn btn-sm btn-danger" role="button">Delete</a>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-center">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?page={{ page_obj.number }}">Page {{ page_obj.number }}
+                                        of {{ page_obj.paginator.num_pages }}</a></li>
+                                    {% if page_obj.has_next %}
+                                        {% if not search_query %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.next_page_number }}">Next</a>
+                                            </li>
+                                        {% endif %}
+                                        {% if search_query %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.next_page_number }}&search_query={{ search_query }}">Next</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main><!-- End #main -->
+
+{% endblock %}

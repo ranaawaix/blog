@@ -1,0 +1,82 @@
+{% load static %}
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link " href="{% url 'dashboard' %}">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="{% url 'all-posts' %}">
+                <i class="bi bi-menu-button-wide"></i><span>Posts</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a href="{% url 'all-posts' %}">
+                        <i class="bi bi-circle"></i><span>All Posts</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'add-post' %}">
+                        <i class="bi bi-circle"></i><span>Add New</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'add-category' %}">
+                        <i class="bi bi-circle"></i><span>Category</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link " href="{% url 'all-comments' %}">
+                <i class="bi bi-grid"></i>
+                <span>Comments</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+        {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
+                   href="{% url 'all-users' %}">
+                    <i class="bi bi-menu-button-wide"></i><span>Users</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'all-users' %}">
+                            <i class="bi bi-circle"></i><span>All Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'add-user' %}">
+                            <i class="bi bi-circle"></i><span>Add New</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'profile' user.id %}">
+                            <i class="bi bi-circle"></i><span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse"
+                   href="#">
+                    <i class="bi bi-menu-button-wide"></i><span>Users</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{% url 'user-profile' user.id %}">
+                            <i class="bi bi-circle"></i><span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        {% endif %}
+    </ul>
+</aside><!-- End Sidebar-->

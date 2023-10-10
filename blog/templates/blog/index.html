@@ -1,0 +1,93 @@
+{% extends 'front_base.html' %}
+{% load static %}
+{% block title %}
+    {{ site_name }}
+{% endblock %}
+{% block content %}
+    {% include 'front_navbar.html' %}
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('/static/front_assets/assets/img/home-bg.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            {% include 'message.html' %}
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="site-heading">
+                        <h1>{{ blog_title }}</h1>
+                        <span class="subheading">{{ blog_description }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content-->
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <!-- Post preview-->
+                {% for post in posts %}
+                    <div class="post-preview">
+                        <a href="{% url 'view-post' post.slug %}">
+                            <h2 class="post-title">{{ post.title }}</h2>
+                            <h3 class="post-subtitle">{{ post.description|truncatechars:100 }}</h3>
+                        </a>
+                        <p class="post-meta">
+                            Posted by
+                            <a href="#">{{ post.author }}</a>
+                            on {{ post.publish_date|date }}
+                        </p>
+                        <p class="post-meta">
+                            <a href="#" type="button" class="position-relative">
+                                <i class="fa-regular fa-heart fa-xl"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ post.get_upvote_count }}
+                                <span class="visually-hidden">unread messages</span>
+                                </span>
+                            </a>
+                            <a href="#" type="button" class="position-relative mx-4">
+                                <i class="fa-regular fa-message fa-xl"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ post.comments.count }}
+                                <span class="visually-hidden">unread messages</span>
+                                </span>
+                            </a>
+                        </p>
+                        <p class="post-meta">
+                            <a href="{% url 'category-posts' post.category.slug %}"
+                               class="badge rounded-pill text-bg-secondary">{{ post.category }}</a>
+                        </p>
+                    </div>
+                    <!-- Divider-->
+                    <hr class="my-4"/>
+                    <!-- Post preview-->
+                {% endfor %}
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="float-start mb-4"><a class="btn btn-primary text-uppercase"
+                                                            href="?page={{ page_obj.previous_page_number }}">Newer
+                                Posts</a>
+                            </li>
+                        {% endif %}
+                        <li class="mx-auto mb-4 my-auto"><a class="text-uppercase"
+                                                            href="?page={{ page_obj.number }}">Page {{ page_obj.number }}
+                            of {{ page_obj.paginator.num_pages }}</a></li>
+                        {% if page_obj.has_next %}
+                            {% if not search_query %}
+                                <li class="float-end mb-4"><a class="btn btn-primary text-uppercase"
+                                                              href="?page={{ page_obj.next_page_number }}">Older
+                                    Posts</a>
+                                </li>
+                            {% endif %}
+                            {% if search_query %}
+                                <li class="float-end mb-4"><a class="btn btn-primary text-uppercase"
+                                                              href="?page={{ page_obj.next_page_number }}&search_query={{ search_query }}">Older
+                                    Posts</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}

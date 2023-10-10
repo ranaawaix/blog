@@ -1,0 +1,23 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Contact Email</title>
+    <link rel="stylesheet" href="{% static 'style/style.css' %}" type="text/css" media="screen"/>
+    <script type="text/javascript" src="{% static 'style/accordian.pack.js' %}"></script>
+</head>
+<body onload="new Accordian('basic-accordian',5,'header_highlight');">
+<div id="logo"><h1>{{ subject }}</h1></div>
+<div id="basic-accordian">
+    <div id="test-header" class="accordion_headings header_highlight">From: {{ name }}</div>
+    <div id="test-content">
+        <div class="accordion_child">
+            <h6><b>Phone: </b>{{ phone }}</h6>
+            <h6><b>Email: </b>{{ email }}</h6>
+            <h6><b>Message: </b>{{ message }}</h6>
+        </div>
+    </div>
+</div>
+</body>
+</html>

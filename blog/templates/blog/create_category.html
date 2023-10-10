@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Add New Category
+{% endblock %}
+{% block content %}
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+    {% include 'message.html' %}
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Add Category</h1>
+        </div><!-- End Page Title -->
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Add a new category</h5>
+                            <!-- Horizontal Form -->
+                            <form method="POST" action="" novalidate>
+                                {% csrf_token %}
+                                {% for field in form %}
+                                    <div class="row mb-3">
+                                        {{ field.label_tag }}
+                                        <div class="col-sm-12">
+                                            {{ field }}
+                                            {% if field.errors %}
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{ field.errors|striptags }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary">Add New Category</button>
+                                    <p class="d-inline-flex gap-1">
+                                        <a href="{% url 'add-category' %}" class="btn btn-danger"
+                                           role="button">Cancel</a>
+                                    </p>
+                                </div>
+                            </form><!-- End Horizontal Form -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="pagetitle">
+                        <h1>All Categories</h1>
+                    </div><!-- End Page Title -->
+                    <section class="section">
+                        <form class="d-flex mb-2" role="search" method="GET">
+                            {% csrf_token %}
+                            {% for field in search_form %}
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ field.errors|striptags }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Categories</h5>
+                                <!-- Table with hoverable rows -->
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Count</th>
+                                        {% if user.is_staff %}
+                                            <th scope="col" class="text-center">Actions</th>
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for category in categories %}
+                                        <tr>
+                                            <th scope="row">{{ category.id }}</th>
+                                            <td>{{ category.name }}</td>
+                                            <td>{{ category.description }}</td>
+                                            <td>{{ category.posts.count }}</td>
+                                            {% if user.is_staff %}
+                                                <td class="text-center">
+                                                    <p class="d-inline-flex gap-1">
+                                                        <a href="{% url 'update-category' category.slug %}"
+                                                           class="btn btn-sm btn-warning"
+                                                           role="button">Update</a>
+                                                        <a href="{% url 'delete-category' category.slug %}"
+                                                           class="btn btn-sm btn-danger"
+                                                           role="button">Delete</a>
+                                                    </p>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-center">
+                                        {% if page_obj.has_previous %}
+                                            <li class="page-item"><a class="page-link"
+                                                                     href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                            </li>
+                                        {% endif %}
+                                        <li class="page-item"><a class="page-link"
+                                                                 href="?page={{ page_obj.number }}">Page {{ page_obj.number }}
+                                            of {{ page_obj.paginator.num_pages }}</a></li>
+                                        {% if page_obj.has_next %}
+                                            {% if not search_query %}
+                                                <li class="page-item"><a class="page-link"
+                                                                         href="?page={{ page_obj.next_page_number }}">Next</a>
+                                                </li>
+                                            {% endif %}
+                                            {% if search_query %}
+                                                <li class="page-item"><a class="page-link"
+                                                                         href="?page={{ page_obj.next_page_number }}&search_query={{ search_query }}">Next</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </main><!-- End #main -->
+{% endblock %}

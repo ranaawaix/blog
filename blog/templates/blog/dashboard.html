@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Dashboard
+{% endblock %}
+{% block content %}
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+    <main id="main" class="main">
+        {% include 'message.html' %}
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+        </div><!-- End Page Title -->
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-6">
+                    <!-- Card with header and footer -->
+                    <div class="card">
+                        <div class="card-header card-title mx-3">At a Glance</div>
+                        <div class="card-body">
+                            <div class="row pt-2">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <a href="{% url 'all-posts' %}"><i
+                                                class="fa-solid fa-thumbtack fa-lg"></i> {{ posts }} Posts</a>
+                                    </div>
+                                    <div class="mt-3">
+                                        <a href="{% url 'all-posts' %}"><i
+                                                class="fa-solid fa-heart fa-lg"></i> {{ upvotes }} Up Votes</a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a href="{% url 'all-comments' %}"><i
+                                            class="fa-solid fa-message fa-lg"></i> {{ comments }} Comments</a>
+                                    <div class="mt-3">
+                                        <a href="{% url 'all-posts' %}"><i
+                                                class="fa-solid fa-heart-crack fa-lg"></i> {{ downvotes }} Down
+                                            Votes</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Card with header and footer -->
+                    <div class="card">
+                        <div class="card-header card-title mx-3">Activity</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Recently Published</h5>
+                            <div class="row bg-light pt-3">
+                                <div class="col-sm-4">
+                                    <div>
+                                        <p>{{ latest_publish_date.publish_date }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    {% if latest_publish_date %}
+                                        <div>
+                                            <a href="{% url 'view-post' latest_publish_date.slug %}"> {{ latest_publish_date.title }}</a>
+                                        </div>
+                                    {% else %}
+                                        <div>
+                                            <a href="#"> You have no posts yet!</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <h5 class="card-title">Recent Comments</h5>
+                            <div class="row bg-light pt-3">
+                                <div class="col-sm-12">
+                                    {% if latest_comment %}
+                                        {% for comment in latest_comment %}
+                                            <div>
+                                                <p><b style="color: #0a53be">From You
+                                                    on
+                                                    <a href="{% url 'view-post' comment.post.slug %}">{{ comment.post.title }}</a></b>
+                                                </p>
+                                                <p>{{ comment.comment }}</p>
+                                                {% if user.is_staff %}
+                                                    <div class="d-inline-flex gap-1 bg-body mb-2">
+                                                <span class="mx-auto px-2"><a
+                                                        href="{% url 'update-comment' comment.slug %}">Update</a></span>
+                                                        <span class="mx-auto px-2"><a
+                                                                href="{% url 'delete-comment' comment.slug %}">Delete</a></span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            <p>You haven't posted any comment yet!</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Card with header and footer -->
+                </div>
+                <div class="col-lg-6">
+                    <!-- Card with header and footer -->
+                    <div class="card">
+                        <div class="card-header card-title mx-3">Quick Post</div>
+                        <div class="card-body">
+                            <div class="row pt-2">
+                                <div class="col-sm-12">
+                                    <form method="POST" action="" novalidate enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {% for field in form %}
+                                            <div class="mb-2">
+                                                <span class="card-title">{{ field.label_tag }}</span>
+                                                {{ field }}
+                                                {% if field.errors %}
+                                                    <div class="alert alert-danger" role="alert">
+                                                        {{ field.errors|striptags }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        <div class="text-center mt-3">
+                                            <button type="submit" class="btn btn-primary">Add New Post</button>
+                                        </div>
+                                    </form><!-- End Horizontal Form -->
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- End Card with header and footer -->
+                </div>
+            </div>
+        </section>
+    </main><!-- End #main -->
+    <script>
+        $(document).ready(function () {
+
+            $(function () {
+                $("#my_date_picker").datepicker();
+            });
+        })
+    </script>
+{% endblock %}
