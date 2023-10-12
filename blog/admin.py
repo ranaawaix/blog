@@ -16,7 +16,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ['user', 'post', 'comment', 'created_on', 'updated_on', 'slug']
+    list_display = ['user', 'post', 'parent_comment', 'comment', 'created_on', 'updated_on']
 
 
 @admin.register(Vote)

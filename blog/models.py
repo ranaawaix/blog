@@ -64,18 +64,13 @@ class Post(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    parent_comment = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='main')
     comment = models.CharField(max_length=250, null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(unique=True, blank=True)
 
     def __str__(self):
         return self.comment
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.comment) + (str(self.user.id))+ (str(self.post_id))
-        return super().save(*args, **kwargs)
 
 
 class Vote(models.Model):

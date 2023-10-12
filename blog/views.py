@@ -121,7 +121,7 @@ class DeletePost(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('all-posts')
 
 
-class ViewPost(LoginRequiredMixin, DetailView):
+class ViewPost(DetailView):
     model = Post
     template_name = 'blog/front_post.html'
 
@@ -140,13 +140,22 @@ class ViewPost(LoginRequiredMixin, DetailView):
         comment_form = context['comment_form']
         post = context['object']
         user = self.request.user
-        if comment_form.is_valid():
-            comment = comment_form.cleaned_data['comment']
-            if comment is not None:
-                form = Comment(user=user, post=post, comment=comment)
-                form.save()
+        parent_comment = request.POST.get('parent_comment')
+        reply = request.POST.get('reply')
+        if reply != '' or None:
+            form = Comment(user=user, post=post, parent_comment=parent_comment, comment=reply)
+            form.save()
             return HttpResponseRedirect(reverse_lazy('view-post', args=[slug]))
-        return render(request, self.template_name, context)
+        if user.is_anonymous:
+            return HttpResponseRedirect(reverse_lazy('login'))
+        else:
+            if comment_form.is_valid():
+                comment = comment_form.cleaned_data['comment']
+                if comment is not None:
+                    form = Comment(user=user, post=post, comment=comment)
+                    form.save()
+                return HttpResponseRedirect(reverse_lazy('view-post', args=[slug]))
+            return render(request, self.template_name, context)
 
 
 class VotePost(LoginRequiredMixin, SingleObjectMixin, View):
@@ -184,7 +193,7 @@ class AllComments(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        queryset = Comment.objects.filter(user=self.request.user)
+        queryset = Comment.objects.filter(post__author=self.request.user)
         return queryset
 
 
