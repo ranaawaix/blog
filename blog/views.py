@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
-from django.http import HttpResponseRedirect
+from django.db.models import Prefetch
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -18,6 +19,16 @@ from blog.models import Category, Post, Comment, Vote, ContactUs
 
 
 # Create your views here.
+
+class LoadMoreRepliesView(View):
+
+    def get(self, request, comment_id):
+        comments = Comment.objects.filter(parent_comment_id=comment_id).order_by('-created_on')
+        context = {'replies': comments}
+        html = render(request, 'blog/all_replies.html', context).content
+        return HttpResponse(html)
+
+
 class CategoryView(LoginRequiredMixin, CreateView):
     model = Category
     form_class = CategoryForm
@@ -129,7 +140,9 @@ class ViewPost(DetailView):
         context = super().get_context_data(**kwargs)
         post = context['object']
         context['comment_form'] = CommentForm(self.request.POST)
-        context['comments'] = post.comments.all()
+        context['comments'] = post.comments.prefetch_related(Prefetch('replies', queryset=Comment.objects.order_by('-created_on'))).filter(parent_comment__isnull=True).order_by(
+            "-created_on")
+        context['replies'] = post.comments.filter(parent_comment__isnull=False).order_by("-created_on")
         context['upvotes'] = post.votes.filter(vote=True).count()
         context['downvotes'] = post.votes.filter(vote=False).count()
         return context
@@ -140,18 +153,16 @@ class ViewPost(DetailView):
         comment_form = context['comment_form']
         post = context['object']
         user = self.request.user
-        parent_comment = request.POST.get('parent_comment')
-        reply = request.POST.get('reply')
-        if reply != '' or None:
-            form = Comment(user=user, post=post, parent_comment=parent_comment, comment=reply)
-            form.save()
-            return HttpResponseRedirect(reverse_lazy('view-post', args=[slug]))
         if user.is_anonymous:
             return HttpResponseRedirect(reverse_lazy('login'))
         else:
             if comment_form.is_valid():
+                parent_comment = comment_form.cleaned_data['parent_comment']
                 comment = comment_form.cleaned_data['comment']
-                if comment is not None:
+                if comment and parent_comment is not None:
+                    form = Comment(user=user, post=post, parent_comment=parent_comment, comment=comment)
+                    form.save()
+                elif comment is not None and parent_comment is None:
                     form = Comment(user=user, post=post, comment=comment)
                     form.save()
                 return HttpResponseRedirect(reverse_lazy('view-post', args=[slug]))

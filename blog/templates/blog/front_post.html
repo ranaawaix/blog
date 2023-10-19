@@ -28,169 +28,210 @@
     </div>
 </div>
 </header>
-<!-- Post Content-->
-<article class="mb-4">
-    <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                {{ post.description }}
+    <!-- Post Content-->
+    <article class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    {{ post.description }}
+                </div>
+                <div class="col-md-2 float-end">
+            {% include 'category_list.html' %}
+        </div>
             </div>
         </div>
-    </div>
-</article>
-<div class="container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <div class="card-footer">
-                <form action="{% url 'view-post' post.slug %}" method="POST" novalidate>
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-sm-9">
-                            {% for field in comment_form %}
-                                {{ field }}
-                                {% if field.errors %}
-                                    <div class="alert alert-danger" role="alert">
-                                        {{ field.errors|striptags }}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="col-sm-1">
-                            <button type="submit" class="btn btn-sm btn-primary">Send</button>
-                        </div>
-                        <div class="col-sm-1">
-                            <a href="{% url 'vote-post' post.slug 1 %}" type="button" class="position-relative">
-                                <i class="fa-regular fa-heart fa-xl"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    </article>
+    <div class="container px-4 px-lg-5 ">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="card-footer">
+                    <form action="{% url 'view-post' post.slug %}" method="POST" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-9">
+                                {% for field in comment_form %}
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ field.errors|striptags }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-1">
+                                <button type="submit" class="btn btn-sm btn-primary rounded-3">Send</button>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="{% url 'vote-post' post.slug 1 %}" type="button" class="position-relative">
+                                    <i class="fa-regular fa-heart fa-xl"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ upvotes }}
                                 <span class="visually-hidden">unread messages</span>
                                 </span>
-                            </a>
-                        </div>
-                        <div class="col-sm-1">
-                            <a href="{% url 'vote-post' post.slug 0 %}" type="button" class="position-relative">
-                                <i class="fa-regular fa-thumbs-down fa-xl"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                </a>
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="{% url 'vote-post' post.slug 0 %}" type="button" class="position-relative">
+                                    <i class="fa-regular fa-thumbs-down fa-xl"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ downvotes }}
                                 <span class="visually-hidden">unread messages</span>
                                 </span>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <p class="d-inline-flex gap-1">
-                            <a href="{% url 'index' %}" class="btn btn-primary" role="button">Go Back</a>
-                        </p>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container px-4 px-lg-5">
-    <div class="row gx-4 gx-lg-5 justify-content-center">
-        <div class="col-md-10 col-lg-8 col-xl-7">
-            <div class="card-footer">
-                <div class="headings d-flex justify-content-between align-items-center mb-3">
-                    <h5>All Comments</h5>
+                        <div class="text-center">
+                            <p class="d-inline-flex gap-1">
+                                <a href="{% url 'index' %}" class="btn btn-primary rounded-3" role="button">Go Back</a>
+                            </p>
+                        </div>
+                    </form>
                 </div>
-                {% for comment in comments %}
-                    <div class="card p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="user d-flex flex-row align-items-center">
-                                <p>
-                                    <small class="font-weight-bold text-primary">{{ comment.user }}</small>
-                                    <small class="font-weight-bold">{{ comment.comment }}</small>
-                                </p>
-                            </div>
-                            <small>{{ comment.created_on }}</small>
-                        </div>
-                        <div class="action d-flex justify-content-between mt-2 align-items-center">
-                            <div class="reply px-4">
-                                <small>Remove</small>
-                                <span class="dots"></span>
-                                <small class="reply-link" data-commentid="{{ object.id }}">Reply</small>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
             </div>
         </div>
     </div>
-</div>
-<!-- Footer-->
-<footer class="border-top">
-    <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                <ul class="list-inline text-center">
-                    <li class="list-inline-item">
-                        <a href="#">
+    <div class="container py-2">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="comments col-md-9 col-md-10 col-lg-8 col-xl-7" id="comments">
+            <h3 class="mb-4 font-weight-light">Comments</h3>
+            <!-- comment -->
+            {% for comment in comments %}
+                <div class="comment row border rounded-3 py-1 px-1 bg-white">
+                    <div class="comment-avatar col-md-1 col-sm-2 text-center pr-1">
+                        <a href=""><img class="mx-auto rounded-circle img-fluid"
+                                        src="https://cdn.icon-icons.com/icons2/2468/PNG/512/user_icon_149329.png"
+                                        alt="avatar"></a>
+                    </div>
+                    <div class="comment-content col-md-11 col-sm-10">
+                        <h6 class="small comment-meta"><a href="#">{{ comment.user }}</a> <small
+                                class="float-end">{{ comment.created_on|date }}</small></h6>
+                        <div class="comment-body">
+                            <p class="my-0"> {{ comment.comment }} <br>
+                                <a href="" class="text-right small reply-link" data-commentid="{{ comment.id }}"><i
+                                        class="ion-reply"></i> Reply</a>
+                            </p>
+                        </div>
+                    </div>
+                    {% with replies=comment.replies.all %}
+                        <div class="replies-{{ comment.id }}">
+                        {% if replies %}
+                        <h6 class="mb-4 font-weight-light col-md-11 offset-md-1 col-sm-10 offset-sm-2 text-decoration-underline">Replies</h6>
+                        {% endif %}
+                        {% for reply in replies|slice:"0:2" %}
+                            <!-- reply is indented -->
+                            <div class="comment-reply col-md-11 offset-md-1 col-sm-10 offset-sm-2 border rounded bg-white py-1 px-1">
+                                <div class="row">
+                                    <div class="comment-avatar col-md-1 col-sm-2 text-center pr-1">
+                                        <a href=""><img class="mx-auto rounded-circle img-fluid"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/User_icon-cp.svg/728px-User_icon-cp.svg.png?20160122182132"
+                                                        alt="avatar"></a>
+                                    </div>
+                                    <div class="comment-content col-md-11 col-sm-10 col-12">
+                                        <h6 class="small comment-meta"><a href="#">{{ reply.user }}</a> <small
+                                                class="float-end">{{ reply.created_on }}</small></h6>
+                                        <div class="comment-body">
+                                            <p class="my-0">{{ reply.comment }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="reply-form-container-{{ comment.id }} col-md-11 offset-md-2 col-sm-10 offset-sm-3"></div>
+                        </div>
+                        {% if replies.count > 2 %}
+                            <a class="col-md-11 offset-md-1 col-sm-10 offset-sm-2 show-more-link" data-commentID="{{ comment.id }}"
+                               href="{% url 'more-replies' comment.id %}">Show More Replies</a>
+                        {% endif %}
+                    {% endwith %}
+                    <!-- /reply is indented -->
+                </div>
+            {% endfor %}
+            <hr>
+            <!-- /comment -->
+        </div>
+    </div>
+    <!-- Footer-->
+    <footer class="border-top">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <ul class="list-inline text-center">
+                        <li class="list-inline-item">
+                            <a href="#">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
                                     </span>
-                        </a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="#">
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
                                     </span>
-                        </a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="#">
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#">
                                     <span class="fa-stack fa-lg">
                                         <i class="fas fa-circle fa-stack-2x"></i>
                                         <i class="fab fa-github fa-stack-1x fa-inverse"></i>
                                     </span>
-                        </a>
-                    </li>
-                </ul>
-                <div class="small text-center text-muted fst-italic">Copyright &copy; Rana Awais Ahmad Blog</div>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; Rana Awais Ahmad Blog</div>
+                </div>
             </div>
         </div>
-    </div>
-</footer>
-<!-- Include jQuery library -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Add a click event handler to all elements with the class 'reply-link'
-        $(".reply-link").click(function (e) {
-            e.preventDefault();
-            var commentId = $(this).data('commentid');
-            var parentComment = $('<input>', {
-                type: 'hidden',
-                id: 'parent_id',
-                value: commentId
-            });
-            var formInput = $('<input>', {
-                type: 'text',
-                placeholder: 'Your reply...',
-                class: 'form-control',
-                id: 'reply',
-            });
-            var replyButton = $('<button>', {
-                id: 'btnsave',
-                text: 'Reply',
-                type: 'submit',
-                class: 'btn btn-sm btn-primary'
-            });
-            var form = `
-                <form class="replyForm" method='POST'>
+    </footer>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".reply-link").click(function (e) {
+                e.preventDefault();
+                var commentId = $(this).data('commentid');
+                var form = `
+                <form action="{% url 'view-post' post.slug %}" method="POST">
                     {% csrf_token %}
-                    <input type="hidden" value="${commentId}" id="parent_id">
-                    <input type="text" placeholder="Your reply" class="form_control" id="reply">
-                    <button type="submit" id="btnsave" class="btn btn-sm btn-primary" >Reply</button>
+                    <input type="hidden" value="${commentId}" id="parent" name="parent_comment">
+                    <textarea placeholder="Your reply" class="form_control" name="comment" id="reply"></textarea>
+                    <button type="submit" class="btn btn-sm btn-primary mb-5" >Reply</button>
                 </form>
             `
-            // Append the form input to the parent element of the clicked link
-            $(this).parent().append(form);
-        });
-    });
-</script>
+                var commentContainer = $(`.reply-form-container-${commentId}`);
 
+                if (commentContainer.find('form').length === 0) {
+                    commentContainer.append(form);
+                } else {
+                    commentContainer.find('form').toggle();
+                }
+
+                commentContainer.find('form').on('click', function (event) {
+                    event.stopPropagation();
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".show-more-link").click(function (e) {
+                e.preventDefault();
+                var commentid = $(this).data('commentid');
+                console.log(commentid);
+                var url = $(this).attr('href');
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (data) {
+                        $(`.replies-${commentid}`).html(data);
+                        $(".show-more-link").hide();
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

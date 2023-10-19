@@ -71,15 +71,15 @@
                                             <div>
                                                 <p><b style="color: #0a53be">From You
                                                     on
-                                                    <a href="{% url 'view-post' comment.post.slug %}">{{ comment.post.title }}</a></b>
+                                                    <a href="{% url 'view-post' comment.post.id %}">{{ comment.post.title }}</a></b>
                                                 </p>
                                                 <p>{{ comment.comment }}</p>
                                                 {% if user.is_staff %}
                                                     <div class="d-inline-flex gap-1 bg-body mb-2">
                                                 <span class="mx-auto px-2"><a
-                                                        href="{% url 'update-comment' comment.slug %}">Update</a></span>
+                                                        href="{% url 'update-comment' comment.id %}">Update</a></span>
                                                         <span class="mx-auto px-2"><a
-                                                                href="{% url 'delete-comment' comment.slug %}">Delete</a></span>
+                                                                href="{% url 'delete-comment' comment.id %}">Delete</a></span>
                                                     </div>
                                                 {% endif %}
                                             </div>
