@@ -36,14 +36,14 @@
                             on {{ post.publish_date|date }}
                         </p>
                         <p class="post-meta">
-                            <a href="#" type="button" class="position-relative">
+                            <a href="{% url 'vote-post' post.slug 1 %}" type="button" class="position-relative">
                                 <i class="fa-regular fa-heart fa-xl"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ post.get_upvote_count }}
                                 <span class="visually-hidden">unread messages</span>
                                 </span>
                             </a>
-                            <a href="#" type="button" class="position-relative mx-4">
+                            <a href="{% url 'view-post' post.slug %}" type="button" class="position-relative mx-4">
                                 <i class="fa-regular fa-message fa-xl"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                 {{ post.comments.count }}

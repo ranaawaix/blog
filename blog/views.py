@@ -201,6 +201,7 @@ class UpdateComment(LoginRequiredMixin, UpdateView):
     model = Comment
     template_name = 'blog/update_comment.html'
     form_class = CommentForm
+    pk_url_kwarg = 'id'
     success_url = reverse_lazy('all-comments')
 
 
